@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <script src='https://code.jquery.com/jquery-3.7.0.min.js'></script>
+        <link rel='stylesheet' href='css/index.css'/>
+        <link rel='stylesheet' href='css/sidebar.css'/>
+        <link rel='stylesheet' href='css/project.css'/>
+        <link rel='stylesheet' href='css/switch.css'/>
+    </head>
+    <body class='light'>
+<!--------------
+  
+   Sidenav
+  
+ -------------->
+
+        <div id='sidenav'>
+            <div class='nav-container' class='light'>
+                <a class='sidenav-link light active' href='#aboutme'>About me</a>
+            </div>
+            <div class='nav-container' class='light'>
+                <a class='sidenav-link light' href='#projects'>Projects</a>
+            </div>
+
+            <a href='https://github.com/rbtms'>
+                <img id='github-logo' src='img/github-mark.png'>
+            </a>
+         </div>
+
+<!--------------
+  
+   Dark mode slider
+  
+ -------------->
+
+
+         <div id='slider'>
+             <label class="switch">
+                <input id='switch-input' type="checkbox">
+                <span class="slider round"></span>
+            </label>
+         </div>
+
+
+<!--------------
+  
+   About me
+  
+ -------------->
+
+
+        <div class='content'>
+        <div id='aboutme'>
+            <center>
+                <div class='mask2'>
+                    <img id='photo' src='img/photo.jpg'></img>
+                </div>
+                <br>
+            </center>
+
+            <div class='content-text'>
+                <div id='intro-text'>
+                    <span id='hi'>Hi!</span> I'm <span id='name'>Álvaro Fernández</span> and I am a currently a last-year Software Engineering student. I like to tackle complex problems in a minimalistic and elegant way.<br>
+                </div>
+                <div id='job'>
+                    Right now, I am looking for a job. If you are interested please
+                    <br>shoot me an e-mail!
+                    <br>
+
+                    <div id='cv-buttons'>
+                        <button class="button">CV (Spanish)</button>
+                        <button class="button">CV (English)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--------------
+  
+   Projects
+  
+ -------------->
+
+        <div id='projects'>
+        </div>
+
+        </div>
+    </div>
+
+    <script src='js/index.js'></script>
+    <script src='js/projects.js'></script>
+    <script src='js/switch.js'></script>
+    </body>
+</html>
+
