@@ -60,6 +60,11 @@ body {
 
 /* Buttons */
 
+.a-pdf {
+    color: white !important;
+    text-decoration: none;
+}
+
 .button {
 	display: inline-block;
     margin: 0;
