@@ -1,0 +1,52 @@
+html {
+ line-height:1.5;
+ -webkit-text-size-adjust:100%;
+ -moz-tab-size:4;
+ -o-tab-size:4;
+ tab-size:4;
+ font-family:var(--font-graphik);
+ font-feature-settings:normal;
+ font-variation-settings:normal
+}
+
+/* Sidenav */
+
+#sidenav {
+  position: fixed;
+  height: 100%;
+  width: 300px;
+  float: left;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding-top:80px;
+}
+
+.sidenav-link {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  text-decoration: none;
+  font-size: 17px;
+  color: black;
+  display: block;
+}
+
+.nav-container {
+    padding-top: 20px;
+    padding-left: 120px;
+}
+
+.sidenav-link:hover {
+    /* TODO */
+}
+
+#github-logo {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    top: 20px;
+    left: 135px;
+}
