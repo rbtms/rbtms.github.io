@@ -8,89 +8,47 @@
         <link rel='stylesheet' href='css/project.css'/>
         <link rel='stylesheet' href='css/switch.css'/>
     </head>
+
     <body class='light'>
-<!--------------
-  
-   Sidenav
-  
- -------------->
+         <side-nav activePage='aboutme'></side-nav>
 
-        <div id='sidenav'>
-            <div class='nav-container' class='light'>
-                <a class='sidenav-link light active' href='#aboutme'>About me</a>
-            </div>
-            <div class='nav-container' class='light'>
-                <a class='sidenav-link light' href='#projects'>Projects</a>
-            </div>
+         <darkmode-slider></darkmode-slider>
 
-            <a href='https://github.com/rbtms'>
-                <img id='github-logo' src='img/github-mark.png'>
-            </a>
-         </div>
+         <!--------------
+             Page content
+           -------------->
 
-<!--------------
-  
-   Dark mode slider
-  
- -------------->
-
-
-         <div id='slider'>
-             <label class="switch">
-                <input id='switch-input' type="checkbox">
-                <span class="slider round"></span>
-            </label>
-         </div>
-
-
-<!--------------
-  
-   About me
-  
- -------------->
-
-
-        <div class='content'>
-        <div id='aboutme'>
-            <center>
-                <div class='mask2'>
-                    <img id='photo' src='img/photo.jpg'></img>
-                </div>
-                <br>
-            </center>
-
-            <div class='content-text'>
-                <div id='intro-text'>
-                    <span id='hi'>Hi!</span> I'm <span id='name'>Álvaro Fernández</span> and currently I am a last-year Software Engineering student. I like to tackle complex problems in a minimalistic and elegant way.<br>
-                </div>
-                <div id='job'>
-                    Right now, I am looking for a job. If you are interested please
-                    <br>shoot me an e-mail!
+         <div class='content'>
+            <div id='aboutme'>
+                <center>
+                    <div class='mask2'>
+                        <img id='photo' src='img/photo.jpg'></img>
+                    </div>
                     <br>
+                </center>
 
-                    <div id='cv-buttons'>
-                        <button class="button"><a class='a-pdf' href='doc/resume_spanish.pdf'>CV (Spanish)</a></button>
-                        <button class="button"><a class='a-pdf' href='doc/resume_english.pdf'>CV (English)</a></button>
+                <div class='content-text'>
+                    <div id='intro-text'>
+                        <span id='hi'>Hi!</span> I'm <span id='name'>Álvaro Fernández</span> and currently I am a last-year Software Engineering student. I like to tackle problems in a minimalistic and elegant way.<br>
+                    </div>
+                    <div id='job'>
+                        Right now, I am looking for a job. If you are interested please
+                        <br>shoot me an e-mail!
+                        <br>
+
+                        <div id='cv-buttons'>
+                            <button class="button"><a class='a-pdf' href='doc/resume_spanish.pdf'>CV (Spanish)</a></button>
+                            <button class="button"><a class='a-pdf' href='doc/resume_english.pdf'>CV (English)</a></button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-<!--------------
-  
-   Projects
-  
- -------------->
-
-        <div id='projects'>
-        </div>
-
-        </div>
     </div>
 
+    <script src='js/sidenav.js'></script>
+    <script src='js/darkmodeSlider.js'></script>
     <script src='js/index.js'></script>
-    <script src='js/projects.js'></script>
-    <script src='js/switch.js'></script>
     </body>
 </html>
 

@@ -36,20 +36,30 @@ projects = [
     }
 ]
 
-projects_elem = $('#projects');
-projects.forEach( project => {
+function appendProject(elem, project, isLast) {
     img_html   = '<img class="project-pic" src="' + project.imgurl + '"/>'
     video_html = '<video controls class="project-pic" src="' + project.imgurl + '"></video>'
     
     project_html = '<div class="project">'
-                 + '  <span class="project-title">' + project.name + '<a href="' + project.repo + '">' + 
-                '<img class="github-link" src="img/github-mark.png">' + 
-            '</a>' +
-'</span>' 
+        + '  <span class="project-title">' + project.name
+            + '<a href="' + project.repo + '">'
+            +   '<img class="github-link" src="img/github-mark.png">' + 
+            '</a>'
+        + '</span>' 
+        + (project.imgurl.includes('.mp4') ? video_html : img_html)
+        + '  <span class="project-desc">' + project.desc + '</span>'
+    + '</div>';
+    
+    if (!isLast) 
+        project_html += '<hr>';
 
-                 + (project.imgurl.includes('.mp4') ? video_html : img_html)
-                 + '  <span class="project-desc">' + project.desc + '</span>'
-                 + '</div><hr>';
+    elem.html(elem.html() + project_html);
+}
 
-    projects_elem.html(projects_elem.html() + project_html);
-})
+/* Append all project elements */
+parent_elem = $('.content');
+
+projects.forEach( (project, i) => {
+    appendProject(parent_elem, project, i == projects.length-1);
+});
+
