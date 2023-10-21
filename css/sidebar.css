@@ -1,3 +1,8 @@
+:root {
+    --var-background-light: #f8f9fa;
+    --var-sidebar-color: #212529;
+}
+
 html {
  line-height:1.5;
  -webkit-text-size-adjust:100%;
@@ -6,22 +11,32 @@ html {
  tab-size:4;
  font-family:var(--font-graphik);
  font-feature-settings:normal;
- font-variation-settings:normal
+ font-variation-settings:normal;
+    
+ min-height: 100%;
 }
 
 /* Sidenav */
 
+/* pc */
 #sidenav {
-  position: fixed;
-  height: 100%;
-  width: 300px;
-  float: left;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  padding-top:80px;
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    padding-top:80px;
+    padding-right: 50px;
+
+    background: #212529;
+    min-height: 100% !important;
+}
+
+#sidebar-name {
+    font-size: 30px;
+    color: var(--var-background-light);
+    display: block;
+    padding-top: 0px;
+    padding-bottom: 40px;
+    line-height: 40px;
 }
 
 .sidenav-link {
@@ -30,13 +45,13 @@ html {
   padding-left: 10px;
   text-decoration: none;
   font-size: 17px;
-  color: black;
+  color: var(--var-background-light) !important;
   display: block;
 }
 
 .nav-container {
     padding-top: 20px;
-    padding-left: 120px;
+    padding-left: 50px;
 }
 
 .sidenav-link:hover {
@@ -47,6 +62,6 @@ html {
     position: relative;
     width: 22px;
     height: 22px;
-    top: 20px;
-    left: 135px;
+    top: 25px;
+    left: 64px;
 }

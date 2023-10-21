@@ -1,3 +1,7 @@
+:root {
+    --var-background-light: #f8f9fa;
+    --var-sidebar-color: #212529;
+}
 
 /* Darkmode options */
 body.light {
@@ -13,30 +17,27 @@ body.dark {
     transition-duration: 0.4s;
 }
 .nav-container .active.light {
-  border-left: 2px solid #505050;
+  border-left: 2px solid var(--var-background-light);
 
   transition-duration: 0.4s;
 }
 .nav-container .active.dark {
-  border-left: 2px solid white;
+  border-left: 2px solid var(--var-sidebar-color);
 
   transition-duration: 0.4s;
 }
 .sidenav-link.light {
-    color: black;
-    border-left: 2px solid white;
+    color: white;
+    border-left: 2px solid var(--var-sidebar-color);
 
     transition-duration: 0.4s;
 }
 .sidenav-link.dark {
-    color: white;
-    border-left: 2px solid #121212;
+    color: #212529;
+    border-left: 2px solid var(--var-background-light);
 
     transition-duration: 0.4s;
 }
-
-
-
 
  /* The switch - the box around the slider */
 #slider {

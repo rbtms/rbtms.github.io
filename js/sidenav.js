@@ -12,6 +12,7 @@ class Sidenav extends HTMLElement {
 
         this.innerHTML = `<div id='sidenav'>
             <div class='nav-container' class='light'>
+            <span id='sidebar-name'>Álvaro Fernández</span>
                 <a class='sidenav-link light ` + (activePage == 'aboutme' ? 'active' : '')
                 + `' href='index.html'>About me</a>
             </div>
@@ -24,7 +25,7 @@ class Sidenav extends HTMLElement {
             <!-- Site links -->
 
             <a href='https://github.com/rbtms'>
-                <img id='github-logo' src='img/github-mark.png'>
+                <img id='github-logo' src='img/github-mark-white.png'>
             </a>
          </div>
 `
