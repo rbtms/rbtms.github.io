@@ -17,14 +17,14 @@ top-nav {
   #topnav {
     position: fixed;
     background: var(--var-sidebar-color);
-    width: 100%;
+    width: 100vw;
     height: 50px;
   }
   
   #topnav-name {
     position: relative;
     top: 15px;
-    right: 15%;
+    right: 5%;
     float: right;
     color: var(--var-background-light);
     font-size: 20px;

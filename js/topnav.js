@@ -10,7 +10,7 @@ class Topnav extends HTMLElement {
     render() {
         this.innerHTML = `<div id='topnav'>
             <div class='topnav-container'>
-                <button id='menu-button'>☰</button>
+                <button id='menu-button'>≡</button>
                 <span id='topnav-name'>Álvaro Fernández</span>
             </div>
 `;
