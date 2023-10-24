@@ -1,6 +1,8 @@
 /* Widen the click area of the a tags inside the buttons */
-$($('button')[1]).on('click', () => $('.a-pdf')[0].click() )
-$($('button')[2]).on('click', () => $('.a-pdf')[1].click() )
+$(document).ready( () => {
+    $($('.button')[0]).on('click', () => $('.a-pdf')[0].click() )
+    $($('.button')[1]).on('click', () => $('.a-pdf')[1].click() );
+});
 
 $('#menu-button').on('click', function(e) {
     /* Clicked on topbar */
@@ -20,3 +22,4 @@ $('#menu-button').on('click', function(e) {
         $('.topnav-container').prepend($('#menu-button').css('position', 'absolute'));
     }
 });
+
