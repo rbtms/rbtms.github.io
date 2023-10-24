@@ -4,27 +4,30 @@
     <head>
         <link rel='stylesheet' href='css/index.css'/>
         <link rel='stylesheet' href='css/sidebar.css'/>
+        <link rel='stylesheet' href='css/topnav.css'/>
         <link rel='stylesheet' href='css/project.css'/>
         <link rel='stylesheet' href='css/switch.css'/>
     </head>
 
     <body>
         <div class='grid-container'>
+            <top-nav></top-nav>
+
             <div class='grid-item'>
                 <side-nav activePage='projects'></side-nav>
             </div>
                 
                 <!--<darkmode-slider></darkmode-slider>-->
-            <div class='grid-item'>
-                <div class='content'></div>
-            </div>
+            <div class='content grid-item'></div>
         </div>
 
         <!-- Scripts -->
+        <script src='js/topnav.js'></script>
         <script src='https://code.jquery.com/jquery-3.7.0.min.js'></script>
         <script src='js/sidenav.js'></script>
         <script src='js/projects.js'></script>
         <script src='js/darkmodeSlider.js'></script>
+        <script src='js/index.js'></script>
     </body>
 </html>
 

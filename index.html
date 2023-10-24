@@ -7,19 +7,23 @@
         <script src='https://code.jquery.com/jquery-3.7.0.min.js'></script>
         <link rel='stylesheet' href='css/index.css'/>
         <link rel='stylesheet' href='css/sidebar.css'/>
+        <link rel='stylesheet' href='css/topnav.css'/>
         <link rel='stylesheet' href='css/project.css'/>
         <link rel='stylesheet' href='css/switch.css'/>
     </head>
 
     <body class='light'>
         <div class='grid-container'>
+            <top-nav></top-nav>
+
             <div class='grid-item'>
                 <side-nav activePage='aboutme'></side-nav>
             </div>
 <!--
             <div class='grid-item'>
                 <darkmode-slider></darkmode-slider>
-            </div>-->
+            </div>
+-->
 
              <!--------------
                  Page content
@@ -28,10 +32,11 @@
              <div class='content grid-item'>
                 <div id='aboutme'>
                     <center>
-                        <div class='mask2'>
-                            <img id='photo' src='img/photo.jpg'></img>
+                        <div id='photo-container'>
+                            <div class='mask2'>
+                                <img id='photo' src='img/photo.jpg'></img>
+                            </div>
                         </div>
-                        <br>
                     </center>
 
                     <div class='content-text'>
@@ -40,13 +45,14 @@
                         </div>
                         <div id='job'>
                             Right now, I am looking for a job. If you are interested please
-                            <br>shoot me an e-mail!
-                            <br>
+                            shoot me an e-mail!
 
-                            <div id='cv-buttons' class='grid-item'>
-                                <button class="button"><a class='a-pdf' href='doc/resume_spanish.pdf'>CV (Spanish)</a></button>
-                                <button class="button"><a class='a-pdf' href='doc/resume_english.pdf'>CV (English)</a></button>
-                            </div>
+                            <center>
+                                <div id='cv-buttons' class='grid-item'>
+                                    <button class="button"><a class='a-pdf' href='doc/resume_spanish.pdf'>CV (Spanish)</a></button>
+                                    <button class="button"><a class='a-pdf' href='doc/resume_english.pdf'>CV (English)</a></button>
+                                </div>
+                            </center>
                         </div>
                     </div>
                 </div>
@@ -54,6 +60,7 @@
         </div>
     </div>
 
+    <script src='js/topnav.js'></script>
     <script src='js/sidenav.js'></script>
     <script src='js/darkmodeSlider.js'></script>
     <script src='js/index.js'></script>

@@ -18,17 +18,70 @@ html, body {
     min-height: 100% !important;
 }
 
+.grid-container {
+    display: grid;
+    column-gap: 25%;
+    grid-template-columns: 0.25fr 0.4fr;
+    //grid-auto-flow: row;
+    
+    min-height: 100%;
+}
+
+/* Mobile */
+@media only screen and (max-width: 600px) {
+    .grid-container {
+        column-gap: 0% !important;
+        grid-template-columns: 0.25fr 0.4fr;
+    }
+    .content {
+        position: absolute;
+        padding-left: 10%;
+        padding-top: 70px !important;
+        width: 80%;
+    }
+    #photo-container {
+        position: relative;
+        left: -15px;
+    }
+    #photo {
+        position: relative;
+        left: -30px;
+    }
+    
+    #cv-buttons {
+        left: 0 !important;
+        padding-left: 0 !important;
+    }
+    .button {
+        position: relative;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+}
+
+/*
+ * Global content
+ */
+
 .content {
+    /*display: none;*/
     padding-top: 10%;
 
     font-size: 16px;
     line-height: 40px;
     max-width: 100%;
+    z-index: -1;
 }
+
+/*
+ * Index content
+ */
 
 .content-text {
     text-align: center;
     text-align: left;
+    
+    text-align:justify; word-break:keep-all;
 }
 
 #hi {
@@ -42,11 +95,20 @@ html, body {
 
 
 #job {
-    display:inline-block;
+    //display:inline-block;
     padding-top: 15px;
+    
+    text-align:justify; word-break:keep-all;
 }
 
-/* Images */
+/*
+ * Index photo
+ */
+
+#photo-container {
+    padding-left: 20px;
+    padding-bottom: 30px;
+}
 
 #photo {
     width: 400px;
@@ -63,7 +125,9 @@ html, body {
 }
 
 
-/* Buttons */
+/*
+ * Index buttons
+ */
 
 .a-pdf {
     color: white !important;
@@ -107,17 +171,6 @@ html, body {
 }
 
 #cv-buttons {
+    position: relative;
     padding-top: 30px;
-    padding-left: 50px;
-    left: center;
 }
-
-.grid-container {
-    display: grid;
-    column-gap: 25%;
-    grid-template-columns: 0.25fr 0.4fr;
-    //grid-auto-flow: row;
-    
-    min-height: 100%;
-}
-
