@@ -8,14 +8,12 @@ projects = [
     }, {
         name  : 'tripperjs',
         desc  : 'Implementation of the 2ch tripcode algorithm through 3DES on Javascript.',
-        imgurl: 'https://camo.githubusercontent.com/d818be4e81c7f9d6109917f8ac249653ebe9c83d70d'
-              + '56b5d0a17a4016148c647/68747470733a2f2f692e696d6775722e636f6d2f686e34466a6f722e706e67',
+        imgurl: 'https://camo.githubusercontent.com/ebdb93fd86a6930b392f2fb018ef0e45798d217ee538da39702604da7d2a67d5/68747470733a2f2f692e696d6775722e636f6d2f686e34466a6f722e706e67',
         repo  : 'https://github.com/rbtms/tripperjs'
     }, {
         name  : 'dekku',
         desc  : 'Simple React JLPT flipcards with examples from jisho.org.',
-        imgurl: 'https://camo.githubusercontent.com/2ceb1b8e4188d7ad697c9077220aa5c1f5318e7c608b'
-              + '4262b3062f33418464d1/68747470733a2f2f692e696d6775722e636f6d2f496830543442692e706e67',
+        imgurl: 'https://camo.githubusercontent.com/867eebeb0d175d4e5f4c89721869cdbb88d617ee14e9b995cc84627e6c972ca3/68747470733a2f2f692e696d6775722e636f6d2f496830543442692e706e67',
         repo : 'https://github.com/rbtms/dekku'
     }, {
         name  : 'Pastebin Codemonkey Editor',
@@ -26,7 +24,7 @@ projects = [
     }, {
         name  : 'Webtorrent TUI',
         desc  : 'Simple TUI for the webtorrent terminal client.',
-        imgurl: 'https://camo.githubusercontent.com/6ac50b25982cac34f7262cebe69f14c49cab14b3c94eee9186781ee1341a63b7/68747470733a2f2f692e696d6775722e636f6d2f396248317435462e676966',
+        imgurl: 'https://camo.githubusercontent.com/495774439cdec244b25bb37672ba51e4da093f3bf71991eca55b6f2a6deacd73/68747470733a2f2f692e696d6775722e636f6d2f396248317435462e676966',
         repo  : 'https://github.com/rbtms/webtorrent_tui'
     }, {
         name  : 'CHIP8 Emulator',
