@@ -1,0 +1,38 @@
+#projects {
+    position: relative;
+}
+
+.project {
+    padding-bottom: 40px;
+}
+
+.project-title {
+   display: block;
+   text-align: center;
+   font-size:35px;
+   padding-bottom: 30px;
+   padding-top: 0px;
+   margin-top: 0px;
+}
+
+.project-pic {
+    width: 100%;
+    height: auto;
+}
+
+.project-desc {
+    display: block;
+    margin-top: 15px;
+}
+
+.github-link {
+    width: 25px !important;
+    height: 25px !important;
+    padding-left: 13px;
+}
+
+hr {
+    height: 0.01px;
+    color: #fff;
+    width: 200px;
+}
