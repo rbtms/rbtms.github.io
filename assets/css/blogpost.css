@@ -1,0 +1,146 @@
+/* Style for the top navigation */
+#topnav {
+  margin-bottom: 10px !important;
+}
+
+/* Style for emphasized text (em) */
+em {
+  word-break: break-all;
+}
+
+h2 {
+    padding-top: 1rem;
+
+}
+
+li {
+  font-size: 16px; /* Same as the rest of the text. For some reason it's bigger by default */
+}
+
+/* Preformatted blocks (eg. code) */
+pre {
+    background-color: #f5f5f5;          /* Light gray background */
+    color: #333333;                     /* Dark text for readability */
+    font-family: 'Courier New', Courier, monospace; /* Monospace font */
+    font-size: 16px;                    /* Comfortable size */
+    line-height: 1.5;                   /* Spacing between lines */
+    padding: 16px 20px;                 /* Padding around text */
+    border-radius: 6px;                 /* Slightly rounded corners */
+    border: 1px solid #dddddd;          /* Subtle border */
+    overflow-x: auto;                   /* Scroll if content overflows */
+    white-space: pre;                    /* Preserve spacing exactly */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Gentle shadow for depth */
+}
+
+/* Figure container styling */
+figure {
+  display: block;                /* Ensure the figure is block-level for centering */
+  margin: 20px auto;             /* Center the figure horizontally and add space above/below */
+  max-width: 100%;               /* Ensure the figure doesn’t exceed the container width */
+  text-align: center;            /* Center content inside the figure */
+  padding: 10px;                 /* Add padding for breathing room */
+  background-color: white;     /* Soft background for the figure */
+  border-radius: 8px;            /* Rounded corners for a modern feel */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Add a subtle shadow */
+  width: fit-content;            /* Make the figure wrap around its content (image) */
+}
+
+/* Styling for the image inside the figure */
+figure img {
+  max-width: 100%;               /* Ensure the image doesn't exceed its original width */
+  height: auto;                  /* Maintain the image's aspect ratio */
+  border-radius: 8px;            /* Round the image corners */
+  object-fit: cover;             /* Ensures the image fits well */
+  padding-bottom: 10px;
+}
+
+/* Figcaption styling */
+figcaption {
+  margin-top: 0px;              /* Add a little extra space between image and caption */
+  font-size: 1rem;               /* Standardize font size */
+  color: black;                   /* A subtle gray color for the caption */
+  text-align: center;            /* Center-align the caption */
+  max-width: 80%;                /* Limit width to prevent over-stretching */
+  margin-left: auto;             /* Center the caption horizontally */
+  margin-right: auto;            /* Center the caption horizontally */
+  line-height: 0.5;              /* Improve readability with a little more line spacing */
+  padding: 5px 10px;             /* Add some padding for space around the text */
+  background-color: white;     /* Light background for the caption */
+  border-radius: 6px;            /* Rounded corners on the caption */
+}
+
+/* Table formatting */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.95rem;
+    color: #2b2b2b;
+}
+
+thead th {
+    text-align: left;
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    border-bottom: 2px solid #d0d0d0;
+    background-color: #fafafa;
+}
+
+tbody td {
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid #e3e3e3;
+    vertical-align: top;
+}
+
+tbody tr.odd {
+    background-color: #ffffff;
+}
+
+tbody tr.even {
+    background-color: #ffffff;
+}
+
+/* Slight emphasis for the first column */
+tbody td:first-child {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* TOC wrapper */
+.toc {
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background-color: white;
+    border-radius: 4px;
+    color: black;
+}
+
+.toc-list {
+    margin-bottom: 2rem;
+}
+
+/* Links */
+.toc-list a {
+    text-decoration: none;
+    color: #1a73e8;
+}
+
+/* Nested lists for subheaders */
+.toc-list ul {
+    list-style: none;
+    padding-left: 1rem;
+    border-left: 1px solid #ccc;
+    margin: 0.25rem 0 0.25rem 0;
+}
+
+.toc-list ul li {
+    margin: 0.15rem 0;
+    padding-left: 0.5rem;
+    font-size: 0.9rem;
+}

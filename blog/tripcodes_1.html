@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel='stylesheet' href='../assets/css/index.css'/>
+        <link rel='stylesheet' href='../assets/css/topnav.css'/>
+        <link rel='stylesheet' href='../assets/css/blogpost.css'/>
+    </head>
+
+    <body>
+        <div class='page-container'>
+            <div id="topnav">
+                <div id="topnav-name"><a href="/index.html">Álvaro Fernández</a></div>
+                <div id="topnav-entries">
+                    <div class="topnav-entry"><a href="/blog.html">Blog</a></div>
+                    <div class="topnav-entry"><a href="/projects.html">Projects</a></div>
+                    <a href="https://github.com/rbtms" target="_blank">
+                        <img src="http://localhost:8000/assets/img/github-mark-white.png" alt="GitHub" style="height:22px; width:auto;">
+                    </a>
+                </div>
+            </div>
+            
+
+            <div id='content'>
+                <h1 id="tripcodes-part-1-how-imageboards-built-identity-on-des">Tripcodes (Part 1): How Imageboards Built Identity on DES</h1>
+<h3 class="toc" id="table-of-contents">Table of Contents</h3>
+<div class="toc-list">
+<ul>
+<li><a href="#what-are-tripcodes">What are tripcodes?</a></li>
+<li><a href="#how-a-tripcode-is-made">How a tripcode is made</a></li>
+<li><a href="#salt-generation">Salt generation</a></li>
+<li><a href="#des-and-crypt3">DES and Crypt(3)</a></li>
+<li><a href="#converting-from-des-output-to-a-tripcode-string">Converting from DES output to a tripcode string</a></li>
+<li><a href="#cryptographic-strength">Cryptographic strength</a></li>
+<li><a href="#wrap-up">Wrap-up</a></li>
+</ul>
+</div>
+<p>I haven’t seen too many posts on the inner workings of tripcodes so I thought it would be nice to do some analysis. This post is divided into two parts for easier readability, where the first part delves into how tripcodes work, and the second one explains how I built a WASM module to brute-force them and how it compares to C / CUDA alternatives.</p>
+<h2 id="what-are-tripcodes">What are tripcodes?</h2>
+<p>In the early 2000s, anonymous imageboards faced a tricky problem: how do you let users build identity without accounts, cookies, or any server-side state? Every post was ephemeral, and impersonation was common. Traditional authentication was unthinkable in anonymous culture, but some way to recognize repeat posters was essential. The solution turned out to be a quick hack. Two-character salt, a truncated password, and 25 rounds of DES.</p>
+<p>2channel, a Japanese bulletin board founded in 1999 by Hiroyuki Nakamura, introduced a way for users to identify themselves through a password that would be processed and then mangled into a series of base64-like characters. Other people would see this and think, “oh yeah, this matches the one from the first (or another thread’s) post, so it must be them”.</p>
+<p>They called them <em>tripcodes</em> (apparently the name came from <strong>ー人用キャップ</strong>, hitori-yō cap, or a <em>cap</em> for oneself), and look like this:</p>
+<pre><code>#abcd1234
+#11112222
+#./..ASDF..</code></pre>
+<p>Here, <code>#</code> marks the start of the tripcode and the following characters are formed from a pool of <strong>a-zA-Z0-9./</strong></p>
+<p>Nowadays when we think of ways to make unique identifiers (outside of systems such as UUID) we may think of SHA-256 or SHA-3 which have gone through rigorous mathematical analysis and have proven hard to find collisions that violate the integrity of the digested data. However, this is early 2000s Japan we’re talking about. It’s also worth noting that 2channel did offer a modern SHA alternative years after that, but it didn’t spread too widely (as far as I know) and there are still multiple websites (notoriously 4chan, but also other sites unrelated to 2channel) using the former system.</p>
+<h2 id="how-a-tripcode-is-made">How a tripcode is made</h2>
+<p>Speaking from a purely cryptographic point of view, any secure hash algorithm could be used against a password to generate a (practically) unique sequence of bytes, but this isn’t the only aspect to consider here. People visiting these websites needed to be able to identify at a glance whether that tripcode pertained to the person they wanted to talk with, so it couldn’t be too long (imagine seeing something like <em>54a59b9f22b0b80880d8427e548b7c23abd873486e1f035dce9cd697e85175033caa88e6d57bc35efae0b5afd3145f31</em> and having to compare every character by eye. Ew.) or too short, since it would be easy to find collisions of some kind. On the other hand, it should be fast enough to read (probably why the output is base64-like).</p>
+<p>Maybe because DES was one of the first widely used encryption algorithms for non-military uses, or maybe because MD5 wasn’t widely used at first for password hashing, or even due to personal preference, all of this made 2channel opt for salted crypt(3)-style DES for the tripcode generation.</p>
+<p>The steps 2channel followed to create an algorithm were:</p>
+<ul>
+<li>First, it took a series of bytes with a maximum of 8. If more than 8 bytes are provided, it ignored those after the 8th one. This means that with UTF-8, where some codepoints are multiple bytes wide, some characters would get truncated midway.</li>
+<li>A 2-byte salt was generated according to a custom generation from the password as well. I imagine the choice for this was to avoid rainbow table attacks because DES has a relatively low key space of 2<sup>56</sup> bits.</li>
+<li>Finally, it sent the data through 25 DES iterations and assigned a custom base64-like character for each group of 6 bits out of the first 60 (of 64) output bits. The 25-round implementation was probably inherited from Unix’s crypt(3) which intentionally weakened DES performance on old hardware.</li>
+</ul>
+<h2 id="salt-generation">Salt generation</h2>
+<p>A lot of symmetric-key algorithms allow for an extra input referred to as <em>salt</em> so that two people with the same (main) input can obtain two completely different results, which makes it harder for an attacker to precompute a list of hashes.</p>
+<p>For (most) tripcode generation, this salt is reduced to 2 characters in the base64 range, that is, you would need to precompute 4096 rainbow tables for exhaustion (presuming zero knowledge of the salt function). In practice, this function rarely changes across implementations, rendering its point moot other than having to dedicate some computing power to processing it. Even if they didn’t, it would be relatively easy to brute-force a 2 character salt anyway.</p>
+<p>It goes through 3 phases:</p>
+<ul>
+<li><strong>Phase 1</strong>: It appends “<strong>H.</strong>” to the string, ensuring an empty string won’t have an invalid salt. I don’t think the string itself has any meaning and it’s probably arbitrary.</li>
+<li><strong>Phase 2</strong>: It takes the first two characters starting from the first index.</li>
+<li><strong>Phase 3</strong>: It goes through a series of replacements (to be specific, it maps **:;&lt;=&gt;?@[\]^_`** -&gt; <strong>ABCDEFabcdefg</strong>), and converts characters outside of the ASCII range to dots.</li>
+</ul>
+<p>The resulting string is the salt that DES will use to perturb its expansion table.</p>
+<figure>
+<img src="/assets/img/tripcode_salt.png" alt="" /><figcaption>Generation example for the password “ab:;1234”</figcaption>
+</figure>
+<h2 id="des-and-crypt3">DES and Crypt(3)</h2>
+<p>Before looking at how the final string is formed, let’s talk a bit about DES.</p>
+<p>DES (Data Encryption Standard) is a 64-bit block cipher with a 56-bit effective key size (64 bits minus the last bit of parity in each byte), standardized in the late 1970s. By the time tripcodes were introduced it was already oldish, but as one of the first widely available civilian encryption standards it was everywhere, and one of the most popular implementations was crypt(3) on Unix.</p>
+<p>crypt(3) does not use DES as a normal encryption primitive. Instead, it abuses it as a slow mixing function. The password (truncated to 8 bytes) becomes the DES key, the plaintext is fixed to all zeroes, and the result is fed back into DES 25 consecutive times. This was done so that brute-force attempts would take way more time than usual.</p>
+<p>The salt, rather than being mixed into the key or input block, alters DES’s expansion table, meaning the same password under two different salts effectively produces two different outputs.</p>
+<p>On tripcodes, it’s pretty much the same. The password is cut to 8 bytes, a 2-character salt is derived from it, and DES is run for 25 iterations. For tripcodes, DES is just used to squeeze a small input space into something that looks random enough.</p>
+<p>Looking at it from 2025, DES has a small key space, the salt is tiny and deterministic, and the construction was never meant to resist parallelism. But for early-2000s imageboards the output was short, fast for servers to compute and implemented on PHP and other backend languages from the start.</p>
+<p>We will look at DES more in depth in the second part. For now, let’s focus on the bigger picture of how tripcodes work.</p>
+<h2 id="converting-from-des-output-to-a-tripcode-string">Converting from DES output to a tripcode string</h2>
+<p>After going through all the DES rounds, the generation algorithm groups the 64 bit output into packs of 6 bits and replaces them according to the following table. The last 4 bits are discarded.</p>
+<figure>
+<img src="/assets/img/tripcode_digest_formatting.png" alt="" /><figcaption><em>Digest</em> formatting table</figcaption>
+</figure>
+<p>The table is a scrambled up base64 table with the same characters, which makes the effective output size of 64<sup>10</sup> (2<sup>60</sup>), regardless of DES’s 64 bit block size.</p>
+<h2 id="cryptographic-strength">Cryptographic strength</h2>
+<p>It goes without saying that users should pick a strong password which isn’t too common. Assuming that most users will probably construct a password out of alphanumeric and common ASCII characters, we have 26 (a-z) + 26 (A-Z) + 10 (0-9) + (.-_,$%&amp;/=^), making a total of 67 different bytes. Give or take. Which gives us around 67<sup>8</sup>, or 576.480.100.000.000, possible inputs. While this doesn’t diminish the actual technical strength of tripcodes, I think it’s important to note how in practice, most of them would be probably easier to break than one would expect. Of course, most passwords will not be formed by 8 characters, but maybe 4-6 as people are lazy setting passwords (more so when the need of authentication isn’t present).</p>
+<p>For comparison, the key space of DES (discounting parity bits) is 2<sup>56</sup>. This is from a western point of view. Japanese users might appear to have access to a larger character set (hiragana, katakana, kanji), but byte-level truncation and multibyte encodings significantly limit the effective entropy gained in practice.</p>
+<p>On the other hand, human error is indeed one of the main dangers of this system. It is made mainly for people, and so it’s easy to mistake two similar sequences. For example, consider the following tripcodes:</p>
+<pre><code>#SECURE.O./
+#SECURE.0./
+
+#TEST123456
+#TESTI12346</code></pre>
+<p>They are very similar, and to a tired eye or a quick reader, they look pretty much the same. This removes the need to find an exact collision a lot of the time, only having to look for similar ones for impersonation.</p>
+<p>It’s also worth noting that the tripcode generation algorithm is publicly known, and several people have been trying to write software to brute-force the search as much as possible. I consider that this is mostly for three reasons:</p>
+<ul>
+<li>Pure curiosity and personal challenge.</li>
+<li>They want to be able to impersonate other users using a given tripcode.</li>
+<li>They want to stylize their own tripcode (technically speaking, they would look for a partial collision), searching (generally through a regular expression) a given sequence of characters they find appealing. For example, you may want to improve the readability of your tripcode by searching one that matches your username.</li>
+</ul>
+<p>Computationally speaking, current approaches differ between those which are CPU and GPU bound, both making heavy use of CPU intrinsics and proprietary technologies such as CUDA to extract every bit of performance. With 2025 consumer-level hardware, one would generally measure CPU brute-forcing speeds in millions per second (M/s), and GPU speeds in thousands of millions per second (B/s).</p>
+<p>Considering a GPU bound search with a speed of 2 billion (again, we are referring to billions here as thousands of millions, not millions of millions), or around 2<sup>30.89</sup>/s, we would only need 36.028.787 seconds, or 417 days (2 days and a half for the human error scenario above). This shows that someone with enough resources to throw at a given tripcode could easily break through it.</p>
+<p>In summary:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Approach</th>
+<th>Measured scale</th>
+<th>Full search time estimate</th>
+<th>Average search time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CPU</td>
+<td>M/s</td>
+<td>45.6y (50M/s) ~ 228.34y (10M/s)</td>
+<td>22.8y ~ 114.17y</td>
+</tr>
+<tr class="even">
+<td>GPU</td>
+<td>B/s</td>
+<td>208d (4B/s) ~ 834d (1B/s)</td>
+<td>208d ~ 834d</td>
+</tr>
+<tr class="odd">
+<td>GPU (common cases)</td>
+<td>B/s</td>
+<td>1.25d (4B/s) ~ 5 d (1B/s)</td>
+<td>15h ~ 2.25d</td>
+</tr>
+</tbody>
+</table>
+<p>Which would only be reduced by a similarity search.</p>
+<h2 id="wrap-up">Wrap-up</h2>
+<p>At a glance, this is the process we have seen in this part:</p>
+<figure>
+<img src="/assets/img/tripcode_generation.png" style="width:75.0%" alt="" /><figcaption>Tripcode generation process</figcaption>
+</figure>
+<p>Thank you for reading. In part two, we will implement DES and tripcode search from scratch, making use of CPU intrinsics and transpiling the code to WASM order to run it directly in the browser. We will also look at both language-specific and general optimization techniques.</p>
+
+            </div>
+        </div>
+    </body>
+</html>

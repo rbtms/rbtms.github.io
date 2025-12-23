@@ -10,6 +10,8 @@
   margin-top: 20px;
   margin-bottom: 50px;
   box-sizing: border-box;
+
+  border-bottom: 1px solid white;
 }
 
 /* Remove any default link styles */
@@ -19,7 +21,7 @@
 }
 
 #topnav-name {
-  font-size: 24px;
+  font-size: 20px;
   color: var(--var-background-light, #ffffff);
   margin-right: 40px;
 }
@@ -27,14 +29,14 @@
 #topnav-entries {
   display: flex;
   position: relative;
-  
+
   margin-left: auto;
   gap: 40px;
 }
 
 /* Use class selector instead of ID */
 .topnav-entry {
-  
+
   font-size: 16px;
   color: white;
   text-decoration: none;
