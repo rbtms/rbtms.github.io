@@ -51,10 +51,6 @@ body {
     transition: color 0.3s ease; /* Smooth color transition for interaction */
 }
 
-#content p:hover {
-    color: #fff; /* Text color change on hover for interactivity */
-}
-
 /* Add subtle animations for content */
 #content {
     animation: fadeIn 1s ease-in-out;
