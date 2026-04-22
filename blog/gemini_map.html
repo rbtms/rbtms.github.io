@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+
+<html>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel='stylesheet' href='../assets/css/index.css'/>
+        <link rel='stylesheet' href='../assets/css/topnav.css'/>
+        <link rel='stylesheet' href='../assets/css/blogpost.css'/>
+    </head>
+
+    <body>
+        <div class='page-container'>
+            <div id="topnav">
+                <div id="topnav-name"><a href="/index.html">Álvaro Fernández</a></div>
+                <div id="topnav-entries">
+                    <div class="topnav-entry"><a href="/blog.html">Blog</a></div>
+                    <div class="topnav-entry"><a href="/projects.html">Projects</a></div>
+                    <a href="https://github.com/rbtms" target="_blank">
+                        <img src="/assets/img/github-mark-white.png" alt="GitHub" style="height:22px; width:auto;">
+                    </a>
+                </div>
+            </div>
+            
+
+            <div id='content'>
+                <h1 id="building-a-map-of-the-gemininet">Building a map of the
+GeminiNet</h1>
+<figure>
+<img src="/build/assets/img/gemini_map/graph.png"
+alt="Gemini map force graph (see here!)" />
+<figcaption aria-hidden="true">Gemini map force graph (<a
+href="https://rbtms.github.io/rbtms/gemini_map.html">see
+here!</a>)</figcaption>
+</figure>
+<h3 class="toc" id="table-of-contents">Table of Contents</h3>
+<div class="toc-list">
+<ul>
+<li><p><a href="#introduction">Introduction</a></p></li>
+<li><p><a href="#methodology">Methodology</a></p>
+<ul>
+<li><a href="#the-crawling">The crawling</a></li>
+<li><a href="#summarizing-the-capsules">Summarizing the
+capsules</a></li>
+<li><a href="#curating-the-information">Curating the
+information</a></li>
+<li><a href="#presenting-the-information-in-a-visual-way">Presenting the
+information in a visual way</a></li>
+</ul></li>
+<li><p><a href="#some-statistics">Some statistics</a></p>
+<ul>
+<li><a href="#basic-stats">Basic stats</a></li>
+<li><a href="#some-of-the-websites-with-the-most-urls">Some of the
+websites with the most URLs</a></li>
+<li><a href="#resource-types">Resource types</a></li>
+<li><a href="#languages">Languages</a></li>
+<li><a href="#external-protocols">External protocols</a></li>
+</ul></li>
+<li><p><a href="#wrap-up">Wrap-up</a></p></li>
+</ul>
+</div>
+<h1 id="introduction">Introduction</h1>
+<p>The small web is nice. It’s really nice. It reminds me of that era
+when corporations were too focused on traditional media such as
+television or radio and left us alone on the internet where we roamed
+forums, chatted on IRC or made dirty webpages with HTML and CSS we
+learnt through weird txt files on the internet.</p>
+<p>Gemini is also very nice. Webpages feel fresh and discussion forums
+have high conversation quality. You can discuss stuff without trolls
+(mostly), without well organized public opinion management groups.
+Without ads because corporations have little to no incentive to spend
+money in a protocol where you can’t put flashy videos and client-side
+scripts to track consumption habits (well, they’re not part of the
+protocol specification anyways).</p>
+<p>However, I feel that unlike other decentralized services such as
+Mastodon or Lemmy which you can browse through your usual browser,
+Gemini has not received a lot of love. Despite a lot of effort by the
+community and capsules (the Gemini version of webpages) that exist to
+track the development, it’s not super intuitive and I wanted to see how
+it was shaped. That’s why I attempted to build a map of Gemini capsules
+and how they’re interconnected with each other.</p>
+<h1 id="methodology">Methodology</h1>
+<h2 id="the-crawling">The crawling</h2>
+<p>First of all I want to apologize to capsule owners. If someone made a
+lot of requests to your address, it was possibly me. Hope I didn’t bring
+down your server or anything.</p>
+<p>I think it’s important to clarify that this is a <em>partial</em>
+crawl. It’s not supposed to be a complete image. I started crawling on
+gemini://geminiprotocol.net and went through the known capsule lists
+which are hosted by communities, but I’m sure there are a lot that
+banned me and couldn’t continue, and others that simply are not listed
+there.</p>
+<p>Something very very nice about Gemini is that the specification is
+really small. So small, in fact, that anyone with a bit of time can make
+a rudimentary client and connect to all the available capsules. This is
+something you absolutely cannot do with the modern net in a
+semipractical way since it’s packed with edge cases, security concerns,
+headers and modes that you have to handle gracefully.</p>
+<p>The crawler I made to crawl (…) the Geminisphere was basically a
+botched down version of <a
+href="https://github.com/rbtms/Gemini-Protocol-Client">the one I made
+for myself</a>. It’s a simple rust client, supports most of the
+specification (I would like to think) and so <em>it generally
+works</em>.</p>
+<p>In fact, I made <em>3 versions</em> of that botched down client. *
+First version was for crawling the capsules and writing the information
+into a SQLite database. * Second version was for normalizing the
+database. * Third version was for fetching the root of each
+hostname.</p>
+<p>I probably didn’t need the third. Oh well.</p>
+<p>There were some edge cases with crawling I didn’t expect. The
+Gemininet is estimated to have around 1.042.214 URLs among 4.723 (!)
+capsules according to <a
+href="https://portal.mozz.us/gemini/gemini.bortzmeyer.org/software/lupa/stats.gmi?">gemini.bortzmeyer.org/software/lupa/stats.gmi</a>.
+It’s really small! However, the problem is precisely that it’s small. A
+lot of those servers are hosted in a raspi or an old laptop and you
+can’t make a lot of requests to them.</p>
+<p>Which is hard to do when a lot of websites have loops and CGI URLs.
+They have text-based applications and games for which I had to revise
+the database from time to time to prune URLs and hostnames. Another pain
+in the ass were git repositories since they tend to be quite big. At one
+point the database reached 45GB with 80% of that being trash URLs.</p>
+<p>And trash URLs there are a lot. The <a
+href="https://portal.mozz.us/gemini/geminiprotocol.net/docs/gemtext-specification.gmi">Gemtext
+specification</a> defines that:</p>
+<pre><code>All the following examples are valid link lines:
+
+=&gt; gemini://example.org/
+=&gt; gemini://example.org/ An example link
+=&gt; gemini://example.org/foo Another example link at the same host
+=&gt; foo/bar/baz.txt  A relative link
+=&gt; gopher://example.org:70/1 A gopher link</code></pre>
+<p>…which means that a lot of websites do things like =&gt;
+wikipedia.org expecting you to handle it gracefully. I mean, that’s
+okay. They’re not that much. Still annoying though.</p>
+<p>There are also search engines and archiving websites that can really
+fatten up your crawling if you’re not careful.</p>
+<p>Finally, you have the dots. Ahhh, the dots.
+gemini://foo.com/bar/../bar/../bar/./bar/../bar. Here’s where the
+normalization client comes in.</p>
+<h2 id="summarizing-the-capsules">Summarizing the capsules</h2>
+<p>Once I had a neat small database of around 10GB pre-pruning some
+trash parts, I configured a local llamacpp instance with Qwen3.5 8B for
+summarizing the content of those capsules and capsule subdomains. The
+parts I was most interested in were the description and categories, but
+I also wanted to know its language and more detailed categories, so I
+set this format in the end:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;hostname&quot;</span><span class="fu">:</span> <span class="er">...</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;language&quot;</span><span class="fu">:</span> <span class="er">...</span><span class="fu">,</span> <span class="er">#</span> <span class="er">two</span> <span class="er">letter</span> <span class="er">code</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;category&quot;</span><span class="fu">:</span> <span class="er">hosting|personal|bbs|forum|others</span> <span class="er">#</span> <span class="er">didn&#39;t</span> <span class="er">want</span> <span class="er">to</span> <span class="er">complicate</span> <span class="er">myself</span> <span class="er">too</span> <span class="er">much</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;subcategories&quot;</span><span class="er">:</span> <span class="ot">[</span> <span class="er">...</span> <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="er">...</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>I think you can know a lot of useful information about a capsule from
+that. Then I made a database search for subdomains and expanded the
+database(JSON, not the SQLite one) such that:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;hostname&quot;:</span> <span class="er">...</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;links&quot;:</span> <span class="ot">[</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>            <span class="er">#</span> <span class="er">the</span> <span class="er">websites</span> <span class="er">that</span> <span class="er">hostname</span> <span class="er">points</span> <span class="er">to</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="er">...</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="er">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;size&quot;:</span> <span class="er">...</span> <span class="er">#</span> <span class="er">the</span> <span class="er">internal</span> <span class="er">number</span> <span class="er">of</span> <span class="er">URLs</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;error&quot;:</span> <span class="er">...</span> <span class="er">#</span> <span class="er">error</span> <span class="er">message</span> <span class="er">or</span> <span class="er">null</span> <span class="er">if</span> <span class="er">it</span> <span class="er">was</span> <span class="er">ok</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;redirect_to&quot;:</span> <span class="er">...</span> <span class="er">#</span> <span class="er">redirect</span> <span class="er">address</span> <span class="er">or</span> <span class="er">null</span> <span class="er">if</span> <span class="er">it</span> <span class="er">was</span> <span class="er">ok</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;language&quot;:</span> <span class="er">...</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;category&quot;:</span> <span class="er">...</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;subcategories&quot;:</span> <span class="er">...</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;description&quot;:</span> <span class="er">...</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="er">&quot;subdomains&quot;:</span> <span class="ot">[</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="er">#</span> <span class="er">same</span> <span class="er">as</span> <span class="er">its</span> <span class="er">parent</span> <span class="er">except</span> <span class="er">this</span> <span class="er">one</span> <span class="er">doesn&#39;t</span> <span class="er">have</span> <span class="er">further</span> <span class="er">subdomains</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="er">#</span> <span class="er">for</span> <span class="er">simplicity</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span></code></pre></div>
+<p>For simplicity I considered subdomains to be anything that has a dot
+before the TLD.</p>
+<h2 id="curating-the-information">Curating the information</h2>
+<p>All in all the descriptions seemed to be reasonable. Although I’m
+sure there is some weird thing around. A lot of the tags were very
+similar (say, blog/blogs, or site/personal webpage), so I spent some
+time curating them. Categories don’t make much sense if there’s going to
+be only 1 member in them after all.</p>
+<p>If you see your capsule and want to change something about it, please
+make a pull request and I’ll accept it with no issues (if you want to
+make an issue on the repo, that’s ok too).</p>
+<h2 id="presenting-the-information-in-a-visual-way">Presenting the
+information in a visual way</h2>
+<p>Which was half the point of doing all this to begin with.</p>
+<p>I picked a force graph for the representation since it looked like a
+reasonable way of understanding the size and outgoing links of capsules,
+as well as having different levels of detail. I suck at front-end so I’m
+sorry if it doesn’t work on phone.</p>
+<p>You can see the map here.</p>
+<h1 id="some-statistics">Some statistics</h1>
+<h2 id="basic-stats">Basic stats</h2>
+<p>The database post-pruning ended up being 6.7GB. You can download it
+here. The JSON ended up being 34MB. I’m sure it can be compressed in
+some way. I’m sorry if you’re low on mobile data.</p>
+<h2 id="some-of-the-websites-with-the-most-urls">Some of the websites
+with the most URLs</h2>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 9%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Hostname</th>
+<th>Size</th>
+<th>Short description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>yesterweb.org</td>
+<td>817645</td>
+<td>Legacy capsule hosting</td>
+</tr>
+<tr class="even">
+<td><a href="https://portal.mozz.us/gemini/taz.de">taz.de</a></td>
+<td>396572</td>
+<td>German newspaper</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://portal.mozz.us/gemini/uploadedlobster.com">uploadedlobster.com</a></td>
+<td>177068</td>
+<td>Rob’s personal blog. Has lots of recordings.</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://portal.mozz.us/gemini/jsreed5.org">jsreed5.org</a></td>
+<td>142163</td>
+<td>Mostly to a replication of OEIS</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://portal.mozz.us/gemini/techrights.org">techrights.org</a></td>
+<td>140173</td>
+<td>Open source advocacy group</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://portal.mozz.us/gemini/hellomouse.net">hellomouse.net</a></td>
+<td>128470</td>
+<td>Capsule hosting</td>
+</tr>
+<tr class="odd">
+<td><a href="https://portal.mozz.us/gemini/gemi.dev">gemi.dev</a></td>
+<td>106069</td>
+<td>Mailing lists, search engine and archive</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://portal.mozz.us/gemini/mirrors.apple2.org.za">apple2.org.za</a></td>
+<td>102432</td>
+<td>Gopher hole for mirrors.apple2.org.za</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://portal.mozz.us/gemini/gem.snork.ca">snork.ca</a></td>
+<td>65101</td>
+<td>Blog with a mirror of textfiles.com</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://portal.mozz.us/gemini/mediocregopher.com">mediocregopher.com</a></td>
+<td>62164</td>
+<td>Personal blog</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://portal.mozz.us/gemini/tuxmachines.org">tuxmachines.org</a></td>
+<td>62132</td>
+<td>Open source advocacy</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://portal.mozz.us/gemini/geminispace.org">geminispace.org</a></td>
+<td>49706</td>
+<td>Probably one of the biggest BBS on Gemini</td>
+</tr>
+<tr class="odd">
+<td><a
+href="https://portal.mozz.us/gemini/cthulhu28.space">cthulhu28.space</a></td>
+<td>40986</td>
+<td>Directory and personal blog</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://portal.mozz.us/gemini/freeshell.de">freeshell.de</a></td>
+<td>36016</td>
+<td>Personal blog</td>
+</tr>
+<tr class="odd">
+<td>spam.works</td>
+<td>22448</td>
+<td>Tons of mirrors of text files</td>
+</tr>
+<tr class="even">
+<td><a
+href="https://portal.mozz.us/gemini/pollux.casa">pollux.casa</a></td>
+<td>20585</td>
+<td>Hosting for Gemini capsules</td>
+</tr>
+</tbody>
+</table>
+<h2 id="resource-types">Resource types</h2>
+<p>I ignored common ones such as .gmi. It makes sense that .txt is
+common as well since it’s frequently used as a replacement for .gmi.
+Other than that, pictures and zip files seem to have the highest number
+of resources.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Extension</th>
+<th>Count</th>
+<th>Percent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>txt</td>
+<td>264230</td>
+<td>42.33%</td>
+</tr>
+<tr class="even">
+<td>jpg</td>
+<td>114116</td>
+<td>18.28%</td>
+</tr>
+<tr class="odd">
+<td>jpeg</td>
+<td>84290</td>
+<td>13.50%</td>
+</tr>
+<tr class="even">
+<td>shtml</td>
+<td>59649</td>
+<td>9.56%</td>
+</tr>
+<tr class="odd">
+<td>png</td>
+<td>57768</td>
+<td>9.25%</td>
+</tr>
+<tr class="even">
+<td>zip</td>
+<td>14936</td>
+<td>2.39%</td>
+</tr>
+<tr class="odd">
+<td>pdf</td>
+<td>12582</td>
+<td>2.02%</td>
+</tr>
+<tr class="even">
+<td>gif</td>
+<td>2729</td>
+<td>0.44%</td>
+</tr>
+<tr class="odd">
+<td>html</td>
+<td>2262</td>
+<td>0.36%</td>
+</tr>
+<tr class="even">
+<td>mp3</td>
+<td>2192</td>
+<td>0.35%</td>
+</tr>
+<tr class="odd">
+<td>tar.gz</td>
+<td>1760</td>
+<td>0.28%</td>
+</tr>
+<tr class="even">
+<td>ogg</td>
+<td>1451</td>
+<td>0.23%</td>
+</tr>
+<tr class="odd">
+<td>wav</td>
+<td>1234</td>
+<td>0.20%</td>
+</tr>
+<tr class="even">
+<td>xml</td>
+<td>1083</td>
+<td>0.17%</td>
+</tr>
+<tr class="odd">
+<td>webp</td>
+<td>1037</td>
+<td>0.17%</td>
+</tr>
+<tr class="even">
+<td>tar</td>
+<td>829</td>
+<td>0.13%</td>
+</tr>
+<tr class="odd">
+<td>svg</td>
+<td>738</td>
+<td>0.12%</td>
+</tr>
+<tr class="even">
+<td>mp4</td>
+<td>364</td>
+<td>0.06%</td>
+</tr>
+<tr class="odd">
+<td>gz</td>
+<td>328</td>
+<td>0.05%</td>
+</tr>
+<tr class="even">
+<td>json</td>
+<td>328</td>
+<td>0.05%</td>
+</tr>
+<tr class="odd">
+<td>csv</td>
+<td>80</td>
+<td>0.01%</td>
+</tr>
+<tr class="even">
+<td>webm</td>
+<td>60</td>
+<td>0.01%</td>
+</tr>
+<tr class="odd">
+<td>mov</td>
+<td>42</td>
+<td>0.01%</td>
+</tr>
+<tr class="even">
+<td>appimage</td>
+<td>38</td>
+<td>0.01%</td>
+</tr>
+<tr class="odd">
+<td>rar</td>
+<td>25</td>
+<td>0.00%</td>
+</tr>
+<tr class="even">
+<td>ico</td>
+<td>21</td>
+<td>0.00%</td>
+</tr>
+<tr class="odd">
+<td>bmp</td>
+<td>21</td>
+<td>0.00%</td>
+</tr>
+<tr class="even">
+<td>avi</td>
+<td>5</td>
+<td>0.00%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="languages">Languages</h2>
+<p>It’s clear that the Geminisphere is predominantly English. Other than
+that, Western languages seem to be the most common.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Language</th>
+<th>Capsule Number</th>
+<th>Percentage over total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>en</td>
+<td>3694</td>
+<td>63.99%</td>
+</tr>
+<tr class="even">
+<td>unknown</td>
+<td>1734</td>
+<td>30.04% <em>(errors, redirections, etc.)</em></td>
+</tr>
+<tr class="odd">
+<td>es</td>
+<td>96</td>
+<td>1.66%</td>
+</tr>
+<tr class="even">
+<td>fr</td>
+<td>71</td>
+<td>1.23%</td>
+</tr>
+<tr class="odd">
+<td>de</td>
+<td>43</td>
+<td>0.74%</td>
+</tr>
+<tr class="even">
+<td>ru</td>
+<td>30</td>
+<td>0.51%</td>
+</tr>
+<tr class="odd">
+<td>pt</td>
+<td>15</td>
+<td>0.25%</td>
+</tr>
+<tr class="even">
+<td>it</td>
+<td>12</td>
+<td>0.20%</td>
+</tr>
+<tr class="odd">
+<td>pl</td>
+<td>12</td>
+<td>0.20%</td>
+</tr>
+<tr class="even">
+<td>ja</td>
+<td>10</td>
+<td>0.17%</td>
+</tr>
+<tr class="odd">
+<td>cs</td>
+<td>4</td>
+<td>0.06%</td>
+</tr>
+<tr class="even">
+<td>fi</td>
+<td>4</td>
+<td>0.06%</td>
+</tr>
+<tr class="odd">
+<td>hu</td>
+<td>4</td>
+<td>0.06%</td>
+</tr>
+<tr class="even">
+<td>zh</td>
+<td>4</td>
+<td>0.06%</td>
+</tr>
+<tr class="odd">
+<td>ca</td>
+<td>3</td>
+<td>0.05%</td>
+</tr>
+<tr class="even">
+<td>el</td>
+<td>3</td>
+<td>0.05%</td>
+</tr>
+<tr class="odd">
+<td>eo</td>
+<td>3</td>
+<td>0.05%</td>
+</tr>
+<tr class="even">
+<td>he</td>
+<td>3</td>
+<td>0.05%</td>
+</tr>
+<tr class="odd">
+<td>sv</td>
+<td>3</td>
+<td>0.05%</td>
+</tr>
+<tr class="even">
+<td>eu</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="odd">
+<td>ga</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="even">
+<td>ko</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="odd">
+<td>nl</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="even">
+<td>no</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="odd">
+<td>sl</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="even">
+<td>tr</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="odd">
+<td>uk</td>
+<td>2</td>
+<td>0.03%</td>
+</tr>
+<tr class="even">
+<td>bs</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+<tr class="odd">
+<td>fa</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+<tr class="even">
+<td>gl</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+<tr class="odd">
+<td>hy</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+<tr class="even">
+<td>la</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+<tr class="odd">
+<td>lt</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+<tr class="even">
+<td>sk</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+<tr class="odd">
+<td>sr</td>
+<td>1</td>
+<td>0.01%</td>
+</tr>
+</tbody>
+</table>
+<p>For comparison, these are the language statistics from <a
+href="https://portal.mozz.us/gemini/gemini.bortzmeyer.org/software/lupa/stats.gmi?">gemini.bortzmeyer.org/software/lupa/stats.gmi</a>
+as of April 2026:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Language</th>
+<th>URL Number</th>
+<th>Percentage over total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>en</td>
+<td>514827</td>
+<td>62.24%</td>
+</tr>
+<tr class="even">
+<td>unknown</td>
+<td>305044</td>
+<td>35.04%</td>
+</tr>
+<tr class="odd">
+<td>de</td>
+<td>10289</td>
+<td>1.18%</td>
+</tr>
+<tr class="even">
+<td>es</td>
+<td>2832</td>
+<td>0.32%</td>
+</tr>
+<tr class="odd">
+<td>fr</td>
+<td>2581</td>
+<td>0.29%</td>
+</tr>
+<tr class="even">
+<td>ru</td>
+<td>538</td>
+<td>0.06%</td>
+</tr>
+<tr class="odd">
+<td>sv</td>
+<td>115</td>
+<td>0.01%</td>
+</tr>
+<tr class="even">
+<td>sgs</td>
+<td>98</td>
+<td>0.01%</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="/build/assets/img/gemini_map/stats.png"
+alt="Bortzmeyer’s stats as of April 2026" />
+<figcaption aria-hidden="true">Bortzmeyer’s stats as of April
+2026</figcaption>
+</figure>
+<p>Note that my statistics are based on the hostname root instead of
+URLs, while Bortzmeyer’s are based on header tags. However, they are
+similar.</p>
+<h2 id="external-protocols">External protocols</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Scheme/Protocol</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>gopher</td>
+<td>176031</td>
+</tr>
+<tr class="even">
+<td>finger</td>
+<td>83254</td>
+</tr>
+<tr class="odd">
+<td>telnet</td>
+<td>19234</td>
+</tr>
+<tr class="even">
+<td>gwit</td>
+<td>18389</td>
+</tr>
+<tr class="odd">
+<td>nex</td>
+<td>17430</td>
+</tr>
+<tr class="even">
+<td>spartan</td>
+<td>13832</td>
+</tr>
+<tr class="odd">
+<td>ftp</td>
+<td>4000</td>
+</tr>
+<tr class="even">
+<td>git</td>
+<td>3278</td>
+</tr>
+<tr class="odd">
+<td>scroll</td>
+<td>3239</td>
+</tr>
+<tr class="even">
+<td>irc</td>
+<td>2986</td>
+</tr>
+<tr class="odd">
+<td>news</td>
+<td>2746</td>
+</tr>
+<tr class="even">
+<td>guppy</td>
+<td>1858</td>
+</tr>
+<tr class="odd">
+<td>xmpp</td>
+<td>1644</td>
+</tr>
+<tr class="even">
+<td>moz-extension</td>
+<td>1445</td>
+</tr>
+<tr class="odd">
+<td>ninep</td>
+<td>1342</td>
+</tr>
+<tr class="even">
+<td>chrome-extension</td>
+<td>952</td>
+</tr>
+<tr class="odd">
+<td>misfin</td>
+<td>782</td>
+</tr>
+<tr class="even">
+<td>snews</td>
+<td>767</td>
+</tr>
+<tr class="odd">
+<td>ssh</td>
+<td>667</td>
+</tr>
+<tr class="even">
+<td>scorpion</td>
+<td>597</td>
+</tr>
+<tr class="odd">
+<td>text</td>
+<td>589</td>
+</tr>
+<tr class="even">
+<td>mailto</td>
+<td>492</td>
+</tr>
+<tr class="odd">
+<td>file</td>
+<td>331</td>
+</tr>
+<tr class="even">
+<td>nntp</td>
+<td>307</td>
+</tr>
+<tr class="odd">
+<td>ttps</td>
+<td>256</td>
+</tr>
+<tr class="even">
+<td>ipfs</td>
+<td>163</td>
+</tr>
+<tr class="odd">
+<td>titan</td>
+<td>85</td>
+</tr>
+<tr class="even">
+<td>gophers</td>
+<td>72</td>
+</tr>
+<tr class="odd">
+<td>ircs</td>
+<td>63</td>
+</tr>
+<tr class="even">
+<td>ttp</td>
+<td>21</td>
+</tr>
+<tr class="odd">
+<td>applewebdata</td>
+<td>21</td>
+</tr>
+<tr class="even">
+<td>sftp</td>
+<td>20</td>
+</tr>
+</tbody>
+</table>
+<p>I omitted those under 20 since they were not very common. It seems
+that <a
+href="https://en.wikipedia.org/wiki/Gopher_(protocol)">Gopher</a> still
+is the most popular alternative to Gemini. This makes sense since one of
+the main requirements of Gemini was to provide a more modern alternative
+to Gopher. <a
+href="https://en.wikipedia.org/wiki/Finger_(protocol)">Finger</a> and <a
+href="https://en.wikipedia.org/wiki/Telnet">Telnet</a> are also
+there.</p>
+<p>Some people left file:// with local paths, which indicates that
+Gemini users are also humans.</p>
+<p>Lots of mail addresses too. I don’t know what’s with the Mozilla and
+Chrome extensions.</p>
+<h1 id="wrap-up">Wrap-up</h1>
+<p>Well, that was fun.</p>
+<p>I’m bad with wrap-ups. Hopefully this helped increase the visibility
+of Gemini. Having alternative networks such as it is very important in a
+time where countries are even planning to set barriers to even start
+using computers or installing your own operating system.</p>
+<p>If you haven’t tried Gemini, I suggest having a look at the <a
+href="https://portal.mozz.us/gemini/geminiprotocol.net/docs/protocol-specification.gmi">specification</a>
+and planning for a weekend project. I might never build a web browser,
+but I would like to think this helped me understand a bit more of how
+all this works.</p>
+<p>Of course, I know not everyone is able or willing. For those people,
+I recommend <a href="https://geminiquickst.art/">this short introduction
+to Gemini</a> which explains serves as an introduction in a much better
+way than I could.</p>
+
+            </div>
+        </div>
+    </body>
+</html>

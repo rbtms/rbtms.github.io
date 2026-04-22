@@ -38,11 +38,13 @@ figure {
   margin: 20px auto;             /* Center the figure horizontally and add space above/below */
   max-width: 100%;               /* Ensure the figure doesn’t exceed the container width */
   text-align: center;            /* Center content inside the figure */
-  padding: 10px;                 /* Add padding for breathing room */
+  padding-top: 2px;                 /* Add padding for breathing room */
   background-color: white;     /* Soft background for the figure */
   border-radius: 8px;            /* Rounded corners for a modern feel */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Add a subtle shadow */
-  width: fit-content;            /* Make the figure wrap around its content (image) */
+  width: fit-content;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 /* Styling for the image inside the figure */
@@ -51,22 +53,19 @@ figure img {
   height: auto;                  /* Maintain the image's aspect ratio */
   border-radius: 8px;            /* Round the image corners */
   object-fit: cover;             /* Ensures the image fits well */
-  padding-bottom: 10px;
 }
 
 /* Figcaption styling */
 figcaption {
-  margin-top: 0px;              /* Add a little extra space between image and caption */
-  font-size: 1rem;               /* Standardize font size */
+  font-size: 0.9rem;               /* Standardize font size */
   color: black;                   /* A subtle gray color for the caption */
   text-align: center;            /* Center-align the caption */
   max-width: 80%;                /* Limit width to prevent over-stretching */
   margin-left: auto;             /* Center the caption horizontally */
   margin-right: auto;            /* Center the caption horizontally */
-  line-height: 0.5;              /* Improve readability with a little more line spacing */
-  padding: 5px 10px;             /* Add some padding for space around the text */
+  line-height: 1.5;              /* Improve readability with a little more line spacing */
+  padding: 0px 0px 5px;             /* Add some padding for space around the text */
   background-color: white;     /* Light background for the caption */
-  border-radius: 6px;            /* Rounded corners on the caption */
 }
 
 /* Table formatting */
@@ -90,7 +89,7 @@ thead th {
 }
 
 tbody td {
-    padding: 0.65rem 0.9rem;
+    padding: 0.5rem 0.9rem;
     border-bottom: 1px solid #e3e3e3;
     vertical-align: top;
 }
@@ -114,8 +113,8 @@ tbody td:first-child {
     padding: 0.5rem 1rem;
     margin: 1rem 0;
     margin-top: 2rem;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 0.9rem;
+    line-height: 1;
     background-color: white;
     border-radius: 4px;
     color: black;
@@ -129,12 +128,13 @@ tbody td:first-child {
 .toc-list a {
     text-decoration: none;
     color: #1a73e8;
+    font-size: 0.8rem;
 }
 
 /* Nested lists for subheaders */
 .toc-list ul {
     list-style: none;
-    padding-left: 1rem;
+    padding-left: 0.6rem;
     border-left: 1px solid #ccc;
     margin: 0.25rem 0 0.25rem 0;
 }
@@ -142,5 +142,10 @@ tbody td:first-child {
 .toc-list ul li {
     margin: 0.15rem 0;
     padding-left: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
+
+.toc-list > ul > li > p{
+    line-height: 10px !important;
+}
+
