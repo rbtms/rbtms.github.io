@@ -60,7 +60,7 @@ websites with the most URLs</a></li>
 <li><p><a href="#wrap-up">Wrap-up</a></p></li>
 </ul>
 </div>
-<h1 id="introduction">Introduction</h1>
+<h2 id="introduction">Introduction</h2>
 <p>The small web is nice. It’s really nice. It reminds me of that era
 when corporations were too focused on traditional media such as
 television or radio and left us alone on the internet where we roamed
@@ -80,8 +80,8 @@ community and capsules (the Gemini version of webpages) that exist to
 track the development, it’s not super intuitive and I wanted to see how
 it was shaped. That’s why I attempted to build a map of Gemini capsules
 and how they’re interconnected with each other.</p>
-<h1 id="methodology">Methodology</h1>
-<h2 id="the-crawling">The crawling</h2>
+<h2 id="methodology">Methodology</h2>
+<h3 id="the-crawling">The crawling</h3>
 <p>First of all I want to apologize to capsule owners. If someone made a
 lot of requests to your address, it was possibly me. Hope I didn’t bring
 down your server or anything.</p>
@@ -139,7 +139,7 @@ fatten up your crawling if you’re not careful.</p>
 <p>Finally, you have the dots. Ahhh, the dots.
 gemini://foo.com/bar/../bar/../bar/./bar/../bar. Here’s where the
 normalization client comes in.</p>
-<h2 id="summarizing-the-capsules">Summarizing the capsules</h2>
+<h3 id="summarizing-the-capsules">Summarizing the capsules</h3>
 <p>Once I had a neat small database of around 10GB pre-pruning some
 trash parts, I configured a local llamacpp instance with Qwen3.5 8B for
 summarizing the content of those capsules and capsule subdomains. The
@@ -178,7 +178,7 @@ class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span></code></pre></div>
 <p>For simplicity I considered subdomains to be anything that has a dot
 before the TLD.</p>
-<h2 id="curating-the-information">Curating the information</h2>
+<h3 id="curating-the-information">Curating the information</h3>
 <p>All in all the descriptions seemed to be reasonable. Although I’m
 sure there is some weird thing around. A lot of the tags were very
 similar (say, blog/blogs, or site/personal webpage), so I spent some
@@ -187,8 +187,8 @@ be only 1 member in them after all.</p>
 <p>If you see your capsule and want to change something about it, please
 make a pull request and I’ll accept it with no issues (if you want to
 make an issue on the repo, that’s ok too).</p>
-<h2 id="presenting-the-information-in-a-visual-way">Presenting the
-information in a visual way</h2>
+<h3 id="presenting-the-information-in-a-visual-way">Presenting the
+information in a visual way</h3>
 <p>Which was half the point of doing all this to begin with.</p>
 <p>I picked a force graph for the representation since it looked like a
 reasonable way of understanding the size and outgoing links of capsules,
@@ -196,13 +196,13 @@ as well as having different levels of detail. I suck at front-end so I’m
 sorry if it doesn’t work on phone.</p>
 <p>You can see the map <a
 href="https://rbtms.github.io/rbtms/gemini_map/">here</a>.</p>
-<h1 id="some-statistics">Some statistics</h1>
-<h2 id="basic-stats">Basic stats</h2>
+<h2 id="some-statistics">Some statistics</h2>
+<h3 id="basic-stats">Basic stats</h3>
 <p>The database post-pruning ended up being 6.7GB. You can download it
 here. The JSON ended up being 34MB. I’m sure it can be compressed in
 some way. I’m sorry if you’re low on mobile data.</p>
-<h2 id="some-of-the-websites-with-the-most-urls">Some of the websites
-with the most URLs</h2>
+<h3 id="some-of-the-websites-with-the-most-urls">Some of the websites
+with the most URLs</h3>
 <table>
 <colgroup>
 <col style="width: 24%" />
@@ -311,7 +311,7 @@ href="https://portal.mozz.us/gemini/pollux.casa">pollux.casa</a></td>
 </tr>
 </tbody>
 </table>
-<h2 id="resource-types">Resource types</h2>
+<h3 id="resource-types">Resource types</h3>
 <p>I ignored common ones such as .gmi. It makes sense that .txt is
 common as well since it’s frequently used as a replacement for .gmi.
 Other than that, pictures and zip files seem to have the highest number
@@ -467,7 +467,7 @@ of resources.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="languages">Languages</h2>
+<h3 id="languages">Languages</h3>
 <p>It’s clear that the Geminisphere is predominantly English. Other than
 that, Western languages seem to be the most common.</p>
 <table>
@@ -719,7 +719,7 @@ alt="Bortzmeyer’s stats as of April 2026" />
 <p>Note that my statistics are based on the hostname root instead of
 URLs, while Bortzmeyer’s are based on header tags. However, they are
 similar.</p>
-<h2 id="external-protocols">External protocols</h2>
+<h3 id="external-protocols">External protocols</h3>
 <table>
 <thead>
 <tr class="header">
@@ -871,7 +871,7 @@ there.</p>
 Gemini users are also humans.</p>
 <p>Lots of mail addresses too. I don’t know what’s with the Mozilla and
 Chrome extensions.</p>
-<h1 id="wrap-up">Wrap-up</h1>
+<h2 id="wrap-up">Wrap-up</h2>
 <p>Well, that was fun.</p>
 <p>I’m bad with wrap-ups. Hopefully this helped increase the visibility
 of Gemini. Having alternative networks such as it is very important in a
