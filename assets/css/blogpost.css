@@ -8,6 +8,11 @@ em {
   word-break: break-all;
 }
 
+h1 {
+    text-align: center;
+    padding-bottom: 4px;
+}
+
 h2 {
     padding-top: 1rem;
 
